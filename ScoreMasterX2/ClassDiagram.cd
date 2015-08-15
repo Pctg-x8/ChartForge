@@ -1,0 +1,287 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="AppContext" Collapsed="true">
+    <Position X="48.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gQIADSAAALsAAJKGAAAIGAQCAQAgAIgARIAAXIAAAAA=</HashCode>
+      <FileName>appContext.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ArrangerPage" Collapsed="true">
+    <Position X="5.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIgIAAgAAAABgBBAAAIEEAAggAAAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>arrangerPage.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ToolCommandButton" Collapsed="true">
+    <Position X="10" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQoIAAAAgAAAAEAAAAAAAEAAIAAgAoAAAAAAAAAAAAA=</HashCode>
+      <FileName>arrangerToolComponents.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ArrangerSpaceMask" Collapsed="true">
+    <Position X="19" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAAAAAAAAAAAAAAAAAAIAAAAAAIAAAAAA=</HashCode>
+      <FileName>arrangerView.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ArrangerBorder" Collapsed="true">
+    <Position X="25.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAIA=</HashCode>
+      <FileName>arrangerView.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ArrangerTools" Collapsed="true">
+    <Position X="30.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAAAAAAAgAAEAACAAAAAAAAAAAAAACAAQA=</HashCode>
+      <FileName>arrangerView.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MeasureBar" Collapsed="true">
+    <Position X="37" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAAAAAAAAAAAAAAAAAAAIAAAAAAACCAAAA=</HashCode>
+      <FileName>arrangerView.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ArrangerInnerViewBase&lt;ContainerT&gt;" Collapsed="true">
+    <Position X="3.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAIACAAIABAAAAAAEAQAACAAAAAQAAAAgAAEBABAQA=</HashCode>
+      <FileName>arrangerView.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SystemTrackView" Collapsed="true">
+    <Position X="3.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAAAAAAAAAAAAAAAAAQAIAAAAAAAAAAAA=</HashCode>
+      <FileName>arrangerView.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ArrangerView">
+    <Position X="22.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIgIAAgEAAAAAQYAHABAEAAgAAAwAAAAAAQAAAAAIAA=</HashCode>
+      <FileName>arrangerView.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BackgroundLayer" Collapsed="true">
+    <Position X="21.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>backgroundLayer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CDropTarget" Collapsed="true">
+    <Position X="50.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAQDAAAAAAABAAAAAAhgAAAIAAAgBAAAAA=</HashCode>
+      <FileName>ddManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DragScreenOverlay" Collapsed="true">
+    <Position X="39.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAABAAAAQBQIAJAAIBAAAAAAA=</HashCode>
+      <FileName>dragScreenOverlay.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LayerAnimation" Collapsed="true">
+    <Position X="52" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>SAAAAAAACAIAAAAAIEAAAAAAAAAAAEAgAAAAAAAAAAA=</HashCode>
+      <FileName>layerManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LayerOpacityEffect" Collapsed="true">
+    <Position X="48.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAAAgAAAAQAAAAAAAQAAQAAQAAAAAAAAA=</HashCode>
+      <FileName>layerManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Layer" Collapsed="true">
+    <Position X="22.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BIqIACQAyICAAEACABAAEoAACIBgE6AEAQACAAAhAAI=</HashCode>
+      <FileName>layerManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LayerManager" Collapsed="true">
+    <Position X="53.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAAAAAAAAACAAACAAAAAIAABAEgCAABAA=</HashCode>
+      <FileName>layerManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Track" Collapsed="true">
+    <Position X="50.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgACAAEAAABAAAAAAgAAAACAEAAQAAAAEAAAAAAA=</HashCode>
+      <FileName>project.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Project" Collapsed="true">
+    <Position X="50.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAQAAAACAAAAAAICAABAAAAAAAAAAMlAgAAAIA=</HashCode>
+      <FileName>project.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ProjectManager" Collapsed="true">
+    <Position X="52" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EgAAAAAEAAAAAAAAAAAAAAAAAAAAAkIAAAAAAAAAgAA=</HashCode>
+      <FileName>project.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RenderDevice" Collapsed="true">
+    <Position X="48.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAAAgAAAAAAASAAQAAAABYCACAAAgAggAI=</HashCode>
+      <FileName>renderDevice.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RenderContext" Collapsed="true">
+    <Position X="53.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAEAAAAAAAAACAgAQAAAAACIAgAEAIAAAAAAZAAAA=</HashCode>
+      <FileName>renderDevice.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScoreEditor" Collapsed="true">
+    <Position X="32.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAgAAAAAAAAQA=</HashCode>
+      <FileName>scoreEditor.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScreenHolder&lt;ContentLayerT&gt;" Collapsed="true">
+    <Position X="41.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAKAAACAAAAAAAAAAAAFBABAAAAAAAoBAABAAAgEAA=</HashCode>
+      <FileName>screenHolder.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SelectorComponent" Collapsed="true">
+    <Position X="7.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIgAgAAAAAAAAFAAAAAAAACEIQAwAIBAAAAAAAAAAgA=</HashCode>
+      <FileName>screenSelector.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScreenSelector" Collapsed="true">
+    <Position X="14.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAIAAAAAAAAAAAAAAAOAAAAAAAgAAAAACAAACAAAQ=</HashCode>
+      <FileName>screenSelector.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IScrollBarValueReceptor" Collapsed="true">
+    <Position X="0.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAA=</HashCode>
+      <FileName>scrollBars.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScrollingThumb" Collapsed="true">
+    <Position X="28" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIoKAAAAgACAAEAAAAAAEAAAIgAwAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>scrollBars.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScrollUnitButton" Collapsed="true">
+    <Position X="34.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIoIAAAAgAABAEAAAAAAABAAIAAgAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>scrollBars.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScrollBarBase" Collapsed="true">
+    <Position X="45" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAQAIIgIAAATAQAAAgAEAAADAAAQIAACGABoEEQABA=</HashCode>
+      <FileName>scrollBars.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VerticalScrollBar" Collapsed="true">
+    <Position X="43.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAIAIIAIAAABgAAAAgAEAAIAAAAQAAAEAAAAAAAAAI=</HashCode>
+      <FileName>scrollBars.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HorizontalScrollBar" Collapsed="true">
+    <Position X="46" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAIAIIAMAAABgAIAAgAEAAAAAAAQAAAAAAAAACAAAA=</HashCode>
+      <FileName>scrollBars.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WaveListView">
+    <Position X="19.5" Y="3.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="WaveListView::Border">
+        <TypeIdentifier>
+          <NewMemberFileName>wavePaletteView.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AIAIAEAAAAAAAAAAAAAAEAAAAAAAAIAAAAAAABAAYEA=</HashCode>
+      <FileName>wavePaletteView.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WavePaletteView" Collapsed="true">
+    <Position X="23.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAIAAAQAAAAAgAAAAAAEAAAAAAAAAAAAAAAAAAAAAg=</HashCode>
+      <FileName>wavePaletteView.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="ComResult" Collapsed="true">
+    <Position X="50.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAAAAAAAAAAAAAAAABAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>comutils.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="SongPosition" Collapsed="true">
+    <Position X="52" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAIAIAAAAAAAAEBAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>project.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="TempoInfo" Collapsed="true">
+    <Position X="53.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAAAAAAAAAAAAQAIAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>project.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="BeatInfo" Collapsed="true">
+    <Position X="48.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAIAAAAAAAAGBAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>project.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Enum Name="SelectorIds" Collapsed="true">
+    <Position X="48.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAgAAAAAAAAAA=</HashCode>
+      <FileName>screenSelector.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Meiryo UI" Size="9" />
+</ClassDiagram>
