@@ -87,6 +87,7 @@ class ArrangerTools final : public Layer
 			void updateAll() override;
 			void onMouseEnter() override;
 			void onMouseLeave() override;
+			void onMouseDown() override;
 		protected:
 			void updateContent(RenderContext* pRenderContext) override;
 		};
@@ -95,6 +96,7 @@ class ArrangerTools final : public Layer
 	public:
 		QuantizeIndicator();
 		~QuantizeIndicator();
+		void notifyUpdateQuantizeValue();
 
 		void updateAll() override;
 		void onMouseMove(const D2D1_POINT_2F& pt) override;
@@ -110,6 +112,7 @@ public:
 	~ArrangerTools();
 
 	void adjustWidth(float w);
+	void notifyUpdateQuantizeValue() { this->pQuantizeIndicator->notifyUpdateQuantizeValue(); }
 
 	void updateAll() override;
 	void onMouseMove(const D2D1_POINT_2F& pt) override;
@@ -229,6 +232,7 @@ public:
 
 	auto getTrackScrollOffset() { return this->pTrackScrollBar->getCurrentValue(); }
 	auto getMeasureScrollOffset() { return this->pMeasScrollBar->getCurrentValue(); }
+	auto notifyUpdateQuantizeValue() { this->pArrangerTools->notifyUpdateQuantizeValue(); }
 
 	void updateAll() override;
 	void onMouseMove(const D2D1_POINT_2F& pt) override;

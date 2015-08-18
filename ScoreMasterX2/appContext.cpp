@@ -51,6 +51,8 @@ int AppContext::runApplication()
 	this->pLayerManager->getRootLayer()->addChild(this->pArrangerViewHolder.get());
 	this->pLayerManager->getRootLayer()->addChild(this->pChartEditorHolder.get());
 
+	this->pQuantizeSelectorPopup = std::make_unique<QuantizeSelectorPopup>();
+
 	{
 		ComPtr<IDropTarget> pDropTarget;
 		hr = CDropTarget::createInstance(&pDropTarget);
@@ -64,7 +66,7 @@ int AppContext::runApplication()
 		this->pProjectManager->getCurrent()->getEndIterator_SystemTracks());
 
 	this->pLayerManager->getRootLayer()->updateAll();
-	this->pScreenSelector->updateAll();
+	this->pScreenSelector->updateAll();	
 
 	auto windowName = L"ChartForge - "s;
 	windowName.append(this->pProjectManager->getFilePath());
@@ -287,4 +289,9 @@ void AppContext::changeScreen(SelectorIds sid)
 		break;
 	default: assert(false);
 	}
+}
+void AppContext::changeQuantizeValue(double v)
+{
+	this->pProjectManager->getCurrent()->setQuantizeValueInv(v);
+	this->pArrangerViewHolder->getContent()->getLeftView()->notifyUpdateQuantizeValue();
 }

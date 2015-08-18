@@ -66,6 +66,12 @@
     <ClInclude Include="chartEditor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="popupFrame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="quantizeSelectorPopup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -111,6 +117,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="chartEditor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="popupFrame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="quantizeSelectorPopup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

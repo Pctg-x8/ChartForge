@@ -230,7 +230,7 @@ ArrangerTools::QuantizeIndicator::QuantizeIndicator() : Layer()
 	this->pQuantizeDrop = std::make_unique<QuantizeDrop>();
 
 	this->addChild(this->pQuantizeDrop.get());
-	this->pQuantizeDrop->setOffset(D2D1::Point2F(getCurrentContext().getRenderDevice()->calcStringWidth(L"Quantize:", L"uiDefault"), 0.0f));
+	this->pQuantizeDrop->setOffset(D2D1::Point2F(getCurrentContext().getRenderDevice()->calcStringWidth(L"Quantize:", L"uiDefault") + 3.0f, 0.0f));
 	
 	this->resize(D2D1::SizeF(this->pQuantizeDrop->getRight(), ToolsSize));
 }
@@ -257,6 +257,10 @@ void ArrangerTools::QuantizeIndicator::updateContent(RenderContext* pRenderConte
 
 	pRenderContext->clearAsComponentBackground();
 	pRenderContext->drawString(L"Quantize:", D2D1::Point2F(), L"uiDefault", pTextBrush.Get());
+}
+void ArrangerTools::QuantizeIndicator::notifyUpdateQuantizeValue()
+{
+	getCurrentContext().queueUpdated(this->pQuantizeDrop.get());
 }
 
 ArrangerTools::QuantizeIndicator::QuantizeDrop::QuantizeDrop() : Layer(D2D1::SizeF(100.0f, ToolsSize))
@@ -302,6 +306,13 @@ void ArrangerTools::QuantizeIndicator::QuantizeDrop::onMouseLeave()
 {
 	this->pBorderOverlay->falloffEffect();
 	this->pArrowOverlay->falloffEffect();
+}
+void ArrangerTools::QuantizeIndicator::QuantizeDrop::onMouseDown()
+{
+	auto ptGlobal = this->getGlobalOffset();
+	ptGlobal.y += this->pBorderOverlay->getSize().height - 4.0f;
+	ptGlobal.x -= 5.0f;
+	getCurrentContext().getQuantizeSelectorPopup()->showAt(getCurrentContext().toDesktopPos(ptGlobal));
 }
 
 ArrangerTools::QuantizeIndicator::QuantizeDrop::BorderOverlay::BorderOverlay() : Layer()

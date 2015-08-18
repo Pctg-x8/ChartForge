@@ -17,6 +17,8 @@
 #include "chartEditor.h"
 #include "dragScreenOverlay.h"
 
+#include "quantizeSelectorPopup.h"
+
 using Microsoft::WRL::ComPtr;
 
 class AppContext
@@ -36,6 +38,8 @@ class AppContext
 	std::unique_ptr<ScreenHolder<ArrangerPage>> pArrangerViewHolder;
 	std::unique_ptr<ScreenHolder<ChartEditor>> pChartEditorHolder;
 	std::unique_ptr<DragScreenOverlay> pDragScreenOverlay;
+
+	std::unique_ptr<QuantizeSelectorPopup> pQuantizeSelectorPopup;
 
 	bool queuedUpdated;
 	std::list<Layer*> updatedLayers;
@@ -63,6 +67,8 @@ public:
 	auto getChartEditor() { return this->pChartEditorHolder->getContent(); }
 	auto getDragScreenOverlay() { return this->pDragScreenOverlay.get(); }
 
+	auto getQuantizeSelectorPopup() { return this->pQuantizeSelectorPopup.get(); }
+
 	auto isEnteringLayer(Layer* p) { return this->pEnteredLayer == p; }
 	auto isHoldingLayer(Layer* p) { return this->pHoldingLayer == p; }
 
@@ -72,6 +78,14 @@ public:
 	void holdLayerWithEntering(Layer* pLayer);
 
 	void changeScreen(SelectorIds sid);
+	void changeQuantizeValue(double v);
+	inline auto toDesktopPos(const D2D1_POINT_2F& pt)
+	{
+		POINT p;
+		p.x = static_cast<LONG>(pt.x); p.y = static_cast<LONG>(pt.y);
+		MapWindowPoints(this->nativePointer, nullptr, &p, 1);
+		return D2D1::Point2F(static_cast<float>(p.x), static_cast<float>(p.y));
+	}
 };
 
 AppContext& getCurrentContext();

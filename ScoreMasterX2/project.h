@@ -97,6 +97,7 @@ public:
 	const auto& getBeatList() const { return this->beatInfos; }
 	auto getQuantizeValue() { return 1.0f / this->qtzDenom; }
 	auto getQuantizeValueInv() { return this->qtzDenom; }
+	void setQuantizeValueInv(double v) { this->qtzDenom = v; }
 };
 
 class ProjectManager

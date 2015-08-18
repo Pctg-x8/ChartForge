@@ -160,6 +160,8 @@
     <ClInclude Include="ddManager.h" />
     <ClInclude Include="dragScreenOverlay.h" />
     <ClInclude Include="layerManager.h" />
+    <ClInclude Include="popupFrame.h" />
+    <ClInclude Include="quantizeSelectorPopup.h" />
     <ClInclude Include="project.h" />
     <ClInclude Include="renderDevice.h" />
     <ClInclude Include="chartEditor.h" />
@@ -178,6 +180,8 @@
     <ClCompile Include="dragScreenOverlay.cpp" />
     <ClCompile Include="layerManager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="popupFrame.cpp" />
+    <ClCompile Include="quantizeSelectorPopup.cpp" />
     <ClCompile Include="project.cpp" />
     <ClCompile Include="renderDevice.cpp" />
     <ClCompile Include="chartEditor.cpp" />

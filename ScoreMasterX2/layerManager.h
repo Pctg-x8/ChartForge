@@ -21,8 +21,10 @@ public:
 
 	void commit();
 	void setLinear(double seconds, float from, float to);
+	void setDelayedLinear(double delay, double seconds, float from, float to);
 	void setQuadratic(double seconds, float from, float to);
 	void setInverseQuadratic(double seconds, float from, float to);
+	void setDelayedInverseQuadratic(double delay, double seconds, float from, float to);
 };
 class LayerOpacityEffect
 {
@@ -36,6 +38,12 @@ public:
 
 	auto getEffectObject() { return this->pEffectObject.Get(); }
 };
+
+// D2D1::Point2F Operator
+inline auto operator+(const D2D1_POINT_2F& p1, const D2D1_POINT_2F& p2)
+{
+	return D2D1::Point2F(p1.x + p2.x, p1.y + p2.y);
+}
 
 class Layer
 {
@@ -89,6 +97,11 @@ public:
 	{
 		return D2D1::Point2F(ptOffsetLocal.x + this->getLeft(), ptOffsetLocal.y + this->getTop());
 	}
+	D2D1_POINT_2F getGlobalOffset()
+	{
+		if (this->hasParent()) return this->getParent()->getGlobalOffset() + this->internalVisualOffset;
+		else return this->internalVisualOffset;
+	}
 
 	virtual void updateAll();
 	virtual void onMouseMove(const D2D1_POINT_2F& pt);
@@ -122,6 +135,7 @@ public:
 		this->pRootLayer = std::make_unique<BackLayerT>();
 		hr = this->pTarget->SetRoot(this->pRootLayer->getVisual());
 	}
+	ComPtr<IDCompositionTarget> createTarget(HWND hNativePointer);
 
 	auto getDevice() { return this->pDevice.Get(); }
 	auto getRootLayer() { return this->pRootLayer.get(); }

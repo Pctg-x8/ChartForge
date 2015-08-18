@@ -26,6 +26,13 @@ void LayerAnimation::setLinear(double seconds, float from, float to)
 	this->pAnimationObject->AddCubic(0.0f, from, static_cast<float>((to - from) / seconds), 0.0f, 0.0f);
 	this->pAnimationObject->End(seconds, to);
 }
+void LayerAnimation::setDelayedLinear(double delay, double seconds, float from, float to)
+{
+	this->pAnimationObject->Reset();
+	this->pAnimationObject->AddCubic(0.0, from, 0.0f, 0.0f, 0.0f);
+	this->pAnimationObject->AddCubic(delay, from, static_cast<float>((to - from) / seconds), 0.0f, 0.0f);
+	this->pAnimationObject->End(delay + seconds, to);
+}
 void LayerAnimation::setQuadratic(double seconds, float from, float to)
 {
 	auto aval = static_cast<float>((to - from) / pow(seconds, 2.0f));
@@ -41,6 +48,16 @@ void LayerAnimation::setInverseQuadratic(double seconds, float from, float to)
 	this->pAnimationObject->Reset();
 	this->pAnimationObject->AddCubic(0.0f, cval, bval, aval, 0.0f);
 	this->pAnimationObject->End(seconds, to);
+}
+void LayerAnimation::setDelayedInverseQuadratic(double delay, double seconds, float from, float to)
+{
+	auto aval = static_cast<float>((from - to) / pow(seconds, 2.0f));
+	auto bval = static_cast<float>(2.0f * (to - from) / seconds);
+	auto cval = from;
+	this->pAnimationObject->Reset();
+	this->pAnimationObject->AddCubic(0.0, from, 0.0f, 0.0f, 0.0f);
+	this->pAnimationObject->AddCubic(delay, cval, bval, aval, 0.0f);
+	this->pAnimationObject->End(delay + seconds, to);
 }
 void LayerAnimation::commit()
 {
@@ -171,4 +188,13 @@ void LayerManager::initDevices()
 	hr = DCompositionCreateDevice2(getCurrentContext().getRenderDevice()->getDevice2(),
 		__uuidof(IDCompositionDesktopDevice), &this->pDevice);
 	hr = this->pDevice->CreateTargetForHwnd(getCurrentContext().getNativePointer(), true, &this->pTarget);
+}
+
+ComPtr<IDCompositionTarget> LayerManager::createTarget(HWND hNativePointer)
+{
+	ComResult hr;
+	ComPtr<IDCompositionTarget> pTargetTemp;
+
+	hr = this->pDevice->CreateTargetForHwnd(hNativePointer, true, &pTargetTemp);
+	return pTargetTemp;
 }
