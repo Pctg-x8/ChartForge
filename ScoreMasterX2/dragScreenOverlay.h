@@ -1,6 +1,8 @@
 #pragma once
 
 #include "layerManager.h"
+#include <mfidl.h>
+#include <string>
 
 class DragScreenOverlay : public Layer
 {

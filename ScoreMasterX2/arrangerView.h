@@ -152,12 +152,20 @@ private:
 	class WaveMatrix : public Layer
 	{
 		ArrangerInnerViewBase<ContainerT>* pOuterView;
+
+		double currentInsertedBarLeft;
 	public:
 		WaveMatrix(ArrangerInnerViewBase<ContainerT>* pout)
 		{
 			this->pOuterView = pout;
 		}
 		~WaveMatrix() = default;
+
+		void setInsertedBarLeft(double v);
+		auto getInsertedBarLeft() { return this->currentInsertedBarLeft; }
+
+		void onMouseMove(const D2D1_POINT_2F& pt) override;
+		void onMouseLeave() override;
 	protected:
 		void updateContent(RenderContext* pRenderContext) override;
 	};
@@ -186,6 +194,8 @@ public:
 	void updateTrackRange(IteratorT begin_iter, IteratorT end_iter);
 
 	virtual void exRenderForWaveMatrix(RenderContext* pRenderContext, uint32_t trackIndex, const D2D1_RECT_F& renderArea) {}
+	void setInsertedBarLeft(double v) { this->pWaveMatrix->setInsertedBarLeft(v); }
+	auto getInsertedBarLeft() { return this->pWaveMatrix->getInsertedBarLeft(); }
 
 	void updateAll() override
 	{
@@ -194,6 +204,7 @@ public:
 		this->pTrackView->updateAll();
 		this->pWaveMatrix->updateAll();
 	}
+	void onMouseMove(const D2D1_POINT_2F& pt) override;
 protected:
 	void resizeContent(const D2D1_SIZE_F& size) override
 	{
@@ -233,6 +244,8 @@ public:
 	auto getTrackScrollOffset() { return this->pTrackScrollBar->getCurrentValue(); }
 	auto getMeasureScrollOffset() { return this->pMeasScrollBar->getCurrentValue(); }
 	auto notifyUpdateQuantizeValue() { this->pArrangerTools->notifyUpdateQuantizeValue(); }
+
+	void syncInsertedBarLeft(Layer* pSender);
 
 	void updateAll() override;
 	void onMouseMove(const D2D1_POINT_2F& pt) override;
@@ -299,6 +312,7 @@ void ArrangerInnerViewBase<ContainerT>::WaveMatrix::updateContent(RenderContext*
 {
 	auto pLineBrush = pRenderContext->createSolidColorBrush(D2D1::ColorF(D2D1::ColorF::White, 0.25f));
 	auto pBarBrush = pRenderContext->createSolidColorBrush(D2D1::ColorF(D2D1::ColorF::White, 0.5f));
+	auto pInsertedBrush = pRenderContext->createSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Red));
 
 	pRenderContext->clear(D2D1::ColorF(0x202020));
 
@@ -340,4 +354,45 @@ void ArrangerInnerViewBase<ContainerT>::WaveMatrix::updateContent(RenderContext*
 			renderIndex++;
 		}
 	}
+
+	if (this->currentInsertedBarLeft >= 0)
+	{
+		pRenderContext->drawVerticalLine(static_cast<float>(this->currentInsertedBarLeft + 0.5f), 0.0f, this->getSize().height, pInsertedBrush.Get());
+	}
+}
+template<typename ContainerT>
+void ArrangerInnerViewBase<ContainerT>::onMouseMove(const D2D1_POINT_2F& pt)
+{
+	if (this->pWaveMatrix->hitTest(pt))
+	{
+		this->pWaveMatrix->onMouseMove(this->pWaveMatrix->toLocal(pt));
+	}
+	else
+	{
+		this->Layer::onMouseMove(pt);
+	}
+}
+
+template<typename ContainerT>
+void ArrangerInnerViewBase<ContainerT>::WaveMatrix::onMouseLeave()
+{
+	this->setInsertedBarLeft(-1);
+	getCurrentContext().getArrangerView()->syncInsertedBarLeft(this->pOuterView);
+}
+template<typename ContainerT>
+void ArrangerInnerViewBase<ContainerT>::WaveMatrix::setInsertedBarLeft(double v)
+{
+	this->currentInsertedBarLeft = v;
+	getCurrentContext().queueUpdated(this);
+}
+
+template<typename ContainerT>
+void ArrangerInnerViewBase<ContainerT>::WaveMatrix::onMouseMove(const D2D1_POINT_2F& pt)
+{
+	this->Layer::onMouseMove(pt);
+
+	auto currentPointerLeft = pt.x + getCurrentContext().getArrangerView()->getMeasureScrollOffset();
+	auto quantizingPixels = (BeatWidth * 4.0) / getCurrentContext().getProjectManager()->getCurrent()->getQuantizeValueInv();
+	this->setInsertedBarLeft(floor((currentPointerLeft / quantizingPixels) + 0.375f) * quantizingPixels - getCurrentContext().getArrangerView()->getMeasureScrollOffset());
+	getCurrentContext().getArrangerView()->syncInsertedBarLeft(this->pOuterView);
 }

@@ -110,10 +110,9 @@ HRESULT CDropTarget::Drop(IDataObject* pDataObj, DWORD grfKeyState, POINTL pt, D
 		auto fnSize = DragQueryFile(hDrop, i, nullptr, 0);
 		std::unique_ptr<wchar_t[]> pFileName(new wchar_t[fnSize + 1]);
 		DragQueryFile(hDrop, i, pFileName.get(), fnSize + 1);
-		
-		OutputDebugString(L"  Dropped File: ");
-		OutputDebugString(pFileName.get());
-		OutputDebugString(L"\n");
+
+		//getCurrentContext().getProjectManager()->getCurrent()->loadSound(pFileName.get());
+		getCurrentContext().getSoundLoaderThread()->sendToLoad(pFileName.get());
 	}
 
 	GlobalUnlock(medium.hGlobal);

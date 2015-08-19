@@ -159,6 +159,7 @@
     <ClInclude Include="comutils.h" />
     <ClInclude Include="ddManager.h" />
     <ClInclude Include="dragScreenOverlay.h" />
+    <ClInclude Include="exitWaitChip.h" />
     <ClInclude Include="layerManager.h" />
     <ClInclude Include="popupFrame.h" />
     <ClInclude Include="quantizeSelectorPopup.h" />
@@ -168,6 +169,7 @@
     <ClInclude Include="screenHolder.h" />
     <ClInclude Include="screenSelector.h" />
     <ClInclude Include="scrollBars.h" />
+    <ClInclude Include="soundLoader.h" />
     <ClInclude Include="wavePaletteView.h" />
   </ItemGroup>
   <ItemGroup>
@@ -178,6 +180,7 @@
     <ClCompile Include="backgroundLayer.cpp" />
     <ClCompile Include="ddManager.cpp" />
     <ClCompile Include="dragScreenOverlay.cpp" />
+    <ClCompile Include="exitWaitChip.cpp" />
     <ClCompile Include="layerManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="popupFrame.cpp" />
@@ -187,6 +190,7 @@
     <ClCompile Include="chartEditor.cpp" />
     <ClCompile Include="screenSelector.cpp" />
     <ClCompile Include="scrollBars.cpp" />
+    <ClCompile Include="soundLoader.cpp" />
     <ClCompile Include="wavePaletteView.cpp" />
   </ItemGroup>
   <ItemGroup>

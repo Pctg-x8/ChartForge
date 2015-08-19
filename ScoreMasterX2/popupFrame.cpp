@@ -2,6 +2,9 @@
 #include "appContext.h"
 #include "comutils.h"
 
+#include <string>
+using namespace std::string_literals;
+
 PopupFrame::PopupFrame(const std::wstring& frameID, WNDPROC pProcCallback)
 {
 	wchar_t frameClassName[256] = {};
@@ -18,7 +21,7 @@ PopupFrame::PopupFrame(const std::wstring& frameID, WNDPROC pProcCallback)
 	if (!RegisterClassEx(&wce)) throw std::exception("PopupFrame Registering failed");
 
 	this->nativePointer = CreateWindowEx(WS_EX_NOREDIRECTIONBITMAP, wce.lpszClassName, L"AppPopupFrame",
-		WS_POPUP, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, getCurrentContext().getNativePointer(),
+		WS_POPUP, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,
 		nullptr, wce.hInstance, nullptr);
 	if (this->nativePointer == nullptr) throw std::exception("PopupFrame Native Pointer create failed");
 

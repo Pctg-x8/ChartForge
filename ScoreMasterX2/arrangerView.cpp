@@ -75,7 +75,15 @@ void ArrangerView::updateAll()
 }
 void ArrangerView::onMouseMove(const D2D1_POINT_2F& pt)
 {
-	if (this->pArrangerTools->hitTest(pt))
+	if (this->pUserTrackView->hitTest(pt))
+	{
+		this->pUserTrackView->onMouseMove(this->pUserTrackView->toLocal(pt));
+	}
+	else if (this->pSysTrackView->hitTest(pt))
+	{
+		this->pSysTrackView->onMouseMove(this->pSysTrackView->toLocal(pt));
+	}
+	else if (this->pArrangerTools->hitTest(pt))
 	{
 		this->pArrangerTools->onMouseMove(this->pArrangerTools->toLocal(pt));
 	}
@@ -105,6 +113,18 @@ void ArrangerView::receiveValueChanged(ScrollBarBase* pSender)
 		getCurrentContext().queueUpdated(this->pUserTrackView->getTrackLayer());
 		getCurrentContext().queueUpdated(this->pUserTrackView->getMatrixLayer());
 	}
+}
+void ArrangerView::syncInsertedBarLeft(Layer* pSender)
+{
+	if (pSender == this->pSysTrackView.get())
+	{
+		this->pUserTrackView->setInsertedBarLeft(this->pSysTrackView->getInsertedBarLeft());
+	}
+	else if(pSender == this->pUserTrackView.get())
+	{
+		this->pSysTrackView->setInsertedBarLeft(this->pUserTrackView->getInsertedBarLeft());
+	}
+	else assert(false);
 }
 
 ArrangerBorder::ArrangerBorder() : Layer()

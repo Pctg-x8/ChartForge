@@ -1,4 +1,7 @@
 #include "dragScreenOverlay.h"
+#include "appContext.h"
+
+using namespace std::string_literals;
 
 DragScreenOverlay::DragScreenOverlay() : Layer()
 {

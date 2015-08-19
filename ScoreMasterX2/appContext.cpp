@@ -4,6 +4,7 @@
 #include <exception>
 #include <string>
 #include <cassert>
+#include <mfapi.h>
 
 #include "arrangerView.h"
 #include "backgroundLayer.h"
@@ -53,6 +54,9 @@ int AppContext::runApplication()
 
 	this->pQuantizeSelectorPopup = std::make_unique<QuantizeSelectorPopup>();
 
+	this->pSoundLoaderThread = std::make_unique<SoundLoader>();
+	this->pLayerManager->getRootLayer()->addChild(this->pSoundLoaderThread->getOverlay());
+
 	{
 		ComPtr<IDropTarget> pDropTarget;
 		hr = CDropTarget::createInstance(&pDropTarget);
@@ -66,7 +70,9 @@ int AppContext::runApplication()
 		this->pProjectManager->getCurrent()->getEndIterator_SystemTracks());
 
 	this->pLayerManager->getRootLayer()->updateAll();
-	this->pScreenSelector->updateAll();	
+	this->pScreenSelector->updateAll();
+
+	this->pWaitChipFrame = std::make_unique<ExitWaitChip>();
 
 	auto windowName = L"ChartForge - "s;
 	windowName.append(this->pProjectManager->getFilePath());
@@ -81,8 +87,7 @@ int AppContext::runApplication()
 			DispatchMessage(&msg);
 			if (msg.message == WM_QUIT)
 			{
-				OleUninitialize();
-				return msg.wParam;
+				return static_cast<int>(msg.wParam);
 			}
 		}
 
@@ -119,7 +124,11 @@ LRESULT CALLBACK AppContext::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM
 	switch (uMsg)
 	{
 	case WM_DESTROY:
+		getCurrentContext().pWaitChipFrame->show();
+		getCurrentContext().pSoundLoaderThread.reset();
+		OleUninitialize();
 		RevokeDragDrop(hWnd);
+		getCurrentContext().pWaitChipFrame->hide();
 		PostQuitMessage(0);
 		break;
 	case WM_SIZE:
@@ -130,6 +139,7 @@ LRESULT CALLBACK AppContext::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM
 		getCurrentContext().pArrangerViewHolder->setTop(getCurrentContext().pScreenSelector->getBottom());
 		getCurrentContext().pChartEditorHolder->setTop(getCurrentContext().pScreenSelector->getBottom());
 		getCurrentContext().pDragScreenOverlay->resize(D2D1::SizeF(LOWORD(lParam), HIWORD(lParam)));
+		getCurrentContext().pSoundLoaderThread->getOverlay()->resize(D2D1::SizeF(LOWORD(lParam), HIWORD(lParam)));
 		// Force Update
 		getCurrentContext().processUpdates();
 		break;
@@ -145,6 +155,16 @@ LRESULT CALLBACK AppContext::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM
 	}
 
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);
+}
+
+void AppContext::processMessagesForWaitFrame()
+{
+	MSG msg;
+	while (PeekMessage(&msg, this->pWaitChipFrame->getNativePointer(), 0, 0, PM_REMOVE) != 0)
+	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
 }
 
 void AppContext::queueUpdated(Layer* pLayer)
@@ -194,7 +214,12 @@ void AppContext::holdLayerWithEntering(Layer* pLayer)
 LRESULT AppContext::onMouseMove(WPARAM wParam, LPARAM lParam)
 {
 	auto pCursor = D2D1::Point2F(static_cast<float>(LOWORD(lParam)), static_cast<float>(HIWORD(lParam)));
-	if (this->pEnterSigHoldingLayer != nullptr)
+	if (this->pSoundLoaderThread->getOverlay()->isEffectRaised())
+	{
+		this->notifyEnteredLayer(nullptr);
+		return 0;
+	}
+	else if (this->pEnterSigHoldingLayer != nullptr)
 	{
 		this->pEnterSigHoldingLayer->onMouseMove(this->pEnterSigHoldingLayer->fromGlobal(pCursor));
 		return 0;

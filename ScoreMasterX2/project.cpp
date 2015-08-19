@@ -3,6 +3,20 @@
 #include <windows.h>
 #include <random>
 #include <cmath>
+#include "appContext.h"
+#include <mfapi.h>
+#include <mfidl.h>
+#include <mfobjects.h>
+#include <mfreadwrite.h>
+#include <wrl.h>
+#include "comutils.h"
+#include "wavePaletteView.h"
+
+#pragma comment(lib, "mfplat")
+#pragma comment(lib, "mfreadwrite")
+#pragma comment(lib, "mfuuid")
+
+using Microsoft::WRL::ComPtr;
 
 using namespace std::string_literals;
 
@@ -59,6 +73,11 @@ void Project::addEmptyTrack()
 {
 	this->userTracks.emplace_back(std::make_shared<Track>(L"Track "s + std::to_wstring(this->userTracks.size() + 1), true, true, makeRandomTrackColor()));
 }
+void Project::addWaveEntity(const std::wstring& filePath, const std::array<std::vector<float>, 2>& pDataBase)
+{
+	this->waveEntityList.push_back(std::make_unique<WaveEntity>(filePath, pDataBase));
+	getCurrentContext().queueUpdated(getCurrentContext().getWavePaletteView()->getWaveListView()->getInnerView());
+}
 
 ProjectManager::ProjectManager()
 {
@@ -72,4 +91,15 @@ void ProjectManager::createEmpty()
 	this->filePath = pwd;
 	this->filePath.append(L"\\untitled.cfp");
 	this->pProjectInstance = std::make_unique<Project>();
+}
+
+WaveEntity::WaveEntity(const std::wstring& filePath, const std::array<std::vector<float>, 2>& pDataBase)
+{
+	this->filePath = filePath;
+	this->dataLength = pDataBase[0].size();
+	this->pDataEntity[0].reset(new float[this->dataLength]);
+	this->pDataEntity[1].reset(new float[this->dataLength]);
+
+	std::memcpy(this->pDataEntity[0].get(), pDataBase[0].data(), pDataBase[0].size() * sizeof(float));
+	std::memcpy(this->pDataEntity[1].get(), pDataBase[1].data(), pDataBase[1].size() * sizeof(float));
 }

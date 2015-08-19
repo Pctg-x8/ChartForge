@@ -84,7 +84,7 @@ float RenderDevice::calcStringWidth(const std::wstring& strMeasured, const std::
 	ComResult hr;
 	DWRITE_TEXT_METRICS metrics;
 
-	hr = this->pdwFactory->CreateTextLayout(strMeasured.c_str(), strMeasured.length(), pFormat,
+	hr = this->pdwFactory->CreateTextLayout(strMeasured.c_str(), static_cast<UINT>(strMeasured.length()), pFormat,
 		floatMax, floatMax, &pLayout);
 	hr = pLayout->GetMetrics(&metrics);
 	return metrics.width;
@@ -97,7 +97,7 @@ D2D1_SIZE_F RenderDevice::calcStringSize(const std::wstring& strMeasured, IDWrit
 	ComResult hr;
 	DWRITE_TEXT_METRICS metrics;
 
-	hr = this->pdwFactory->CreateTextLayout(strMeasured.c_str(), strMeasured.length(), pFormat,
+	hr = this->pdwFactory->CreateTextLayout(strMeasured.c_str(), static_cast<UINT>(strMeasured.length()), pFormat,
 		floatMax, floatMax, &pLayout);
 	hr = pLayout->GetMetrics(&metrics);
 	return D2D1::SizeF(metrics.width, metrics.height);
@@ -156,7 +156,7 @@ ComPtr<ID2D1LinearGradientBrush> RenderContext::createLinearGradientBrush(const 
 
 void RenderContext::drawString(const std::wstring& str, const D2D1_POINT_2F& pt, IDWriteTextFormat* pFormat, ID2D1Brush* pBrush)
 {
-	this->pInternalContext->DrawTextW(str.c_str(), str.length(), pFormat, 
+	this->pInternalContext->DrawTextW(str.c_str(), static_cast<UINT>(str.length()), pFormat, 
 		D2D1::RectF(pt.x, pt.y, floatMax, floatMax), pBrush);
 }
 void RenderContext::drawString(const std::wstring& str, const D2D1_POINT_2F& pt, const std::wstring& formatKey, ID2D1Brush* pBrush)
@@ -173,8 +173,18 @@ void RenderContext::drawStringCenter(const std::wstring& str, const D2D1_RECT_F&
 
 	auto pSize = getCurrentContext().getRenderDevice()->calcStringSize(str, pFormat);
 	auto pt = D2D1::Point2F(rect.left + (rw - pSize.width) / 2.0f, rect.top + (rh - pSize.height) / 2.0f);
-	this->pInternalContext->DrawTextW(str.c_str(), str.length(), pFormat,
+	this->pInternalContext->DrawTextW(str.c_str(), static_cast<UINT>(str.length()), pFormat,
 		D2D1::RectF(pt.x, pt.y, pt.x + pSize.width, pt.y + pSize.height), pBrush);
+}
+void RenderContext::drawStringHCenter(const std::wstring& str, float left, float right, float top, const std::wstring& formatKey, ID2D1Brush* pBrush)
+{
+	auto rw = right - left;
+	auto pFormat = getCurrentContext().getRenderDevice()->getStockedFormat(formatKey);
+
+	auto pSize = getCurrentContext().getRenderDevice()->calcStringSize(str, pFormat);
+	auto pt = D2D1::Point2F(left + (rw - pSize.width) / 2.0f, top);
+	this->pInternalContext->DrawTextW(str.c_str(), static_cast<UINT>(str.length()), pFormat,
+		D2D1::RectF(pt.x, top, pt.x + pSize.width, top + pSize.height), pBrush);
 }
 
 void RenderContext::drawRectFrame(const D2D1_RECT_F& rect, ID2D1Brush* pBrush)
@@ -184,6 +194,10 @@ void RenderContext::drawRectFrame(const D2D1_RECT_F& rect, ID2D1Brush* pBrush)
 void RenderContext::drawRect(const D2D1_RECT_F& rect, ID2D1Brush* pBrush)
 {
 	this->pInternalContext->FillRectangle(rect, pBrush);
+}
+void RenderContext::drawRoundedRect(const D2D1_RECT_F& rect, float radius, ID2D1Brush* pBrush)
+{
+	this->pInternalContext->FillRoundedRectangle(D2D1::RoundedRect(rect, radius, radius), pBrush);
 }
 void RenderContext::drawHorizontalLine(float y, float x1, float x2, ID2D1Brush* pBrush)
 {

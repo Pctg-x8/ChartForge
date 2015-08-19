@@ -72,6 +72,12 @@
     <ClInclude Include="quantizeSelectorPopup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="soundLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="exitWaitChip.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -123,6 +129,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="quantizeSelectorPopup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soundLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="exitWaitChip.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

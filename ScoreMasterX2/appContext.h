@@ -19,6 +19,9 @@
 
 #include "quantizeSelectorPopup.h"
 
+#include "soundLoader.h"
+#include "exitWaitChip.h"
+
 using Microsoft::WRL::ComPtr;
 
 class AppContext
@@ -40,6 +43,9 @@ class AppContext
 	std::unique_ptr<DragScreenOverlay> pDragScreenOverlay;
 
 	std::unique_ptr<QuantizeSelectorPopup> pQuantizeSelectorPopup;
+
+	std::unique_ptr<SoundLoader> pSoundLoaderThread;
+	std::unique_ptr<ExitWaitChip> pWaitChipFrame;
 
 	bool queuedUpdated;
 	std::list<Layer*> updatedLayers;
@@ -64,13 +70,19 @@ public:
 
 	auto getScreenSelector() { return this->pScreenSelector.get(); }
 	auto getArrangerView() { return this->pArrangerViewHolder->getContent()->getLeftView(); }
+	auto getWavePaletteView() { return this->pArrangerViewHolder->getContent()->getRightView(); }
 	auto getChartEditor() { return this->pChartEditorHolder->getContent(); }
 	auto getDragScreenOverlay() { return this->pDragScreenOverlay.get(); }
 
 	auto getQuantizeSelectorPopup() { return this->pQuantizeSelectorPopup.get(); }
 
+	auto getSoundLoaderThread() { return this->pSoundLoaderThread.get(); }
+	auto getWaitChipFrame() { return this->pWaitChipFrame.get(); }
+
 	auto isEnteringLayer(Layer* p) { return this->pEnteredLayer == p; }
 	auto isHoldingLayer(Layer* p) { return this->pHoldingLayer == p; }
+
+	void processMessagesForWaitFrame();
 
 	void queueUpdated(Layer* pLayer);
 	void notifyEnteredLayer(Layer* pLayer);

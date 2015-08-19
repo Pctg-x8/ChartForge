@@ -6,6 +6,9 @@
 #include <list>
 #include <vector>
 #include <d2d1.h>
+#include <shlwapi.h>
+
+#pragma comment(lib, "shlwapi")
 
 D2D1_COLOR_F makeRandomTrackColor();
 
@@ -69,6 +72,26 @@ struct BeatInfo
 	}
 };
 
+class WaveEntity
+{
+	// wave entity
+	std::wstring filePath;
+	size_t dataLength;
+	std::array<std::unique_ptr<float[]>, 2> pDataEntity;
+public:
+	WaveEntity(const std::wstring& filePath, const std::array<std::vector<float>, 2>& pDataBase);
+
+	auto getFilePath() { return this->filePath; }
+	auto getFileName()
+	{
+		auto pFileName = PathFindFileName(this->filePath.c_str());
+		return std::wstring(pFileName);
+	}
+	auto getDataLength() { return this->dataLength; }
+	auto getLeftEntity() { return this->pDataEntity[0].get(); }
+	auto getRightEntity() { return this->pDataEntity[1].get(); }
+};
+
 class Project
 {
 	// Project Structure
@@ -81,6 +104,7 @@ private:
 
 	std::list<TempoInfo> tempoInfos;
 	std::list<BeatInfo> beatInfos;
+	std::vector<std::unique_ptr<WaveEntity>> waveEntityList;
 
 	double qtzDenom;
 public:
@@ -88,11 +112,14 @@ public:
 	~Project();
 
 	void addEmptyTrack();
+	void addWaveEntity(const std::wstring& filePath, const std::array<std::vector<float>, 2>& pDataBase);
 
 	auto getBeginIterator_SystemTracks() { return std::cbegin(this->systemTracks); }
 	auto getEndIterator_SystemTracks() { return std::cend(this->systemTracks); }
 	auto getBeginIterator_UserTracks() { return std::cbegin(this->userTracks); }
 	auto getEndIterator_UserTracks() { return std::cend(this->userTracks); }
+	auto getBeginIterator_WaveEntities() { return std::cbegin(this->waveEntityList); }
+	auto getEndIterator_WaveEntities() { return std::cend(this->waveEntityList); }
 	const auto& getTempoList() const { return this->tempoInfos; }
 	const auto& getBeatList() const { return this->beatInfos; }
 	auto getQuantizeValue() { return 1.0f / this->qtzDenom; }

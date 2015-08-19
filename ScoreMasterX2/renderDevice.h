@@ -58,9 +58,11 @@ public:
 	void drawString(const std::wstring& str, const D2D1_POINT_2F& pt, const std::wstring& formatKey, ID2D1Brush* pBrush);
 	void drawStringCenter(const std::wstring& str, const D2D1_RECT_F& rect, const std::wstring& formatKey, ID2D1Brush* pBrush);
 	void drawStringCenter(const std::wstring& str, const D2D1_RECT_F& rect, IDWriteTextFormat* pFormat, ID2D1Brush* pBrush);
+	void drawStringHCenter(const std::wstring& str, float left, float right, float top, const std::wstring& formatKey, ID2D1Brush* pBrush);
 
 	void drawRectFrame(const D2D1_RECT_F& rect, ID2D1Brush* pBrush);
 	void drawRect(const D2D1_RECT_F& rect, ID2D1Brush* pBrush);
+	void drawRoundedRect(const D2D1_RECT_F& rect, float radius, ID2D1Brush* pBrush);
 	void drawHorizontalLine(float y, float x1, float x2, ID2D1Brush* pBrush);
 	void drawVerticalLine(float x, float y1, float y2, ID2D1Brush* pBrush);
 };
