@@ -123,6 +123,7 @@ public:
 	void updatePageProperty(double p, double f);
 	void updatePageSize(double p);
 	void updateFullSize(double f);
+	void updateCurrentValue(double v);
 
 	auto isValid() { return this->is_valid; }
 
@@ -134,7 +135,6 @@ public:
 	virtual void validate();
 	virtual void invalidate();
 protected:
-	void updateCurrentValue(double v);
 	void updateContent(RenderContext* pRenderContext) override;
 private:
 	void updateValidStatus();

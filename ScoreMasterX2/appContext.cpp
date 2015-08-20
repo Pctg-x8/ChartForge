@@ -213,7 +213,8 @@ void AppContext::holdLayerWithEntering(Layer* pLayer)
 }
 LRESULT AppContext::onMouseMove(WPARAM wParam, LPARAM lParam)
 {
-	auto pCursor = D2D1::Point2F(static_cast<float>(LOWORD(lParam)), static_cast<float>(HIWORD(lParam)));
+	auto pCursor = D2D1::Point2F(static_cast<float>(static_cast<int16_t>(LOWORD(lParam))),
+		static_cast<float>(static_cast<int16_t>(HIWORD(lParam))));
 	if (this->pSoundLoaderThread->getOverlay()->isEffectRaised())
 	{
 		this->notifyEnteredLayer(nullptr);

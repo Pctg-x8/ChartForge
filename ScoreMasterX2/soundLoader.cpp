@@ -24,6 +24,8 @@ SoundLoader::SoundLoader()
 {
 	this->pOverlay = std::make_unique<LoadingScreen>();
 
+	this->loaderQueue.clear();
+	this->waitingCount.store(0);
 	this->hasExited.store(false);
 	this->pThread = std::thread(&SoundLoader::WorkerProc, this);
 }
@@ -34,17 +36,22 @@ SoundLoader::~SoundLoader()
 
 void SoundLoader::WorkerProc()
 {
+	bool dirtyProject = false;
+
 	OutputDebugString(L"Start SoundLoader thread.\n");
 	MFStartup(MF_VERSION);
 	while (true)
 	{
 		if (this->hasExited.load()) break;
 
+		this->pOverlay->updateWaitingCount(this->waitingCount.load());
 		std::wstring filePathRetrieved;
 		if (this->loaderQueue.try_pop(filePathRetrieved))
 		{
 			// success
 			this->pOverlay->raiseEffect();
+			this->waitingCount--;
+			this->pOverlay->updateWaitingCount(this->waitingCount.load());
 
 			// From Project::LoadSound //
 			ComResult hr;
@@ -87,7 +94,7 @@ void SoundLoader::WorkerProc()
 				this->pOverlay->initLoadingProgress(filePathRetrieved, sourceDuration);
 
 				std::array<std::vector<float>, 2> samples;
-				while (true)
+				/*while (true)
 				{
 					ComPtr<IMFSample> pSample;
 					ComPtr<IMFMediaBuffer> pBuffer;
@@ -101,15 +108,6 @@ void SoundLoader::WorkerProc()
 					hr = pSample->GetBufferCount(&bufferCount);
 					hr = pSample->ConvertToContiguousBuffer(&pBuffer);
 					hr = pBuffer->GetCurrentLength(&bufferBytes);
-					// OutputDebugString((L"  Loading progress: "s + std::to_wstring((static_cast<double>(timestamp) / static_cast<double>(sourceDuration)) * 100.0) + L"%\n"s).c_str());
-					/*OutputDebugString(L"  -- ReadSample Descriptions --\n");
-					OutputDebugString((L"   ActualStreamIndex: "s + std::to_wstring(actualStreamIndex) + L"\n"s).c_str());
-					OutputDebugString((L"   StreamFlags: "s + std::to_wstring(streamFlags) + L"\n"s).c_str());
-					OutputDebugString((L"   Timestamp: "s + std::to_wstring(timestamp / (10.0 * 1000.0)) + L" ms\n"s).c_str());
-					OutputDebugString((L"   Sample Bytes: "s + std::to_wstring(sampleBytes) + L"\n"s).c_str());
-					OutputDebugString((L"   Sample Duration: "s + std::to_wstring(sampleDuration / (10.0 * 1000.0)) + L" ms\n"s).c_str());
-					OutputDebugString((L"   Buffer Count: "s + std::to_wstring(bufferCount) + L"\n"s).c_str());
-					OutputDebugString((L"   Buffer Length: "s + std::to_wstring(bufferBytes) + L"\n"s).c_str());*/
 
 					float* ppBuffer;
 					hr = pBuffer->Lock((BYTE**)&ppBuffer, nullptr, nullptr);
@@ -121,17 +119,26 @@ void SoundLoader::WorkerProc()
 					hr = pBuffer->Unlock();
 
 					this->pOverlay->setCurrentProgress(timestamp);
-				}
+				}*/
 				
-				getCurrentContext().getProjectManager()->getCurrent()->addWaveEntity(filePathRetrieved, samples);
+				getCurrentContext().getProjectManager()->getCurrent()->addWaveEntity(filePathRetrieved, sourceDuration / (10.0 * 1000.0 * 1000.0), samples);
+				dirtyProject = true;
 				// OutputDebugString((L"Assertion: samples[0].length == samples[1].length ? "s + (samples[0].size() == samples[1].size() ? L"true"s : L"false"s) + L"\n"s).c_str());
 			}
-			catch (const _com_error& e)
+			catch (const _com_error&)
 			{
 				OutputDebugString(L"Unsupported Format or Internal Error.\n");
 			}
 		}
-		if (this->loaderQueue.empty()) this->pOverlay->falloffEffect();
+		if (this->loaderQueue.empty())
+		{
+			if (dirtyProject)
+			{
+				getCurrentContext().getProjectManager()->getCurrent()->commitUpdateWaveEntity();
+				dirtyProject = false;
+			}
+			this->pOverlay->falloffEffect();
+		}
 		std::this_thread::sleep_for(std::chrono::microseconds(1));
 	}
 	MFShutdown();
@@ -154,6 +161,7 @@ void SoundLoader::exitThread()
 void SoundLoader::sendToLoad(const std::wstring& filePath)
 {
 	this->loaderQueue.push(filePath);
+	this->waitingCount++;
 }
 
 LoadingScreen::LoadingScreen() : Layer(D2D1::SizeF(100, 100))
@@ -184,6 +192,8 @@ void LoadingScreen::updateContent(RenderContext* pRenderContext)
 		pRenderContext->drawRoundedRect(progressRect, 2.0f, pProgressBackBrush.Get());
 		pRenderContext->drawRoundedRect(D2D1::RectF(progressRect.left, progressRect.top, progressRect.left + progressWidth * progressPercent, progressRect.bottom),
 			2.0f, pProgressForeBrush.Get());
+		pRenderContext->drawStringHCenter(L"Waiting "s + std::to_wstring(this->waitingCount) + L" files."s, 0, this->getSize().width, progressRect.bottom + 4.0f,
+			L"uiDefault", pLoadingTextBrush.Get());
 	}
 }
 
@@ -221,4 +231,12 @@ void LoadingScreen::setCurrentProgress(const MFTIME& timeCurrent)
 {
 	this->timeCurrent = timeCurrent;
 	getCurrentContext().queueUpdated(this);
+}
+void LoadingScreen::updateWaitingCount(uint32_t v)
+{
+	if (v != this->waitingCount)
+	{
+		this->waitingCount = v;
+		getCurrentContext().queueUpdated(this);
+	}
 }

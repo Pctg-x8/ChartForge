@@ -19,6 +19,7 @@ class LoadingScreen final : public Layer
 	// For Progress reflection //
 	MFTIME timeTotal, timeCurrent;
 	std::wstring filePath;
+	uint32_t waitingCount;
 public:
 	LoadingScreen();
 	~LoadingScreen();
@@ -30,6 +31,7 @@ public:
 
 	void raiseEffect();
 	void falloffEffect();
+	void updateWaitingCount(uint32_t v);
 protected:
 	void updateContent(RenderContext* pRenderContext) override;
 };
@@ -43,6 +45,7 @@ class SoundLoader
 	concurrency::concurrent_queue<std::wstring> loaderQueue;
 	std::mutex terminatorMutex;
 	std::condition_variable varWaitTerminated;
+	std::atomic<uint32_t> waitingCount;
 
 	void WorkerProc();
 public:

@@ -11,6 +11,7 @@
 #include <wrl.h>
 #include "comutils.h"
 #include "wavePaletteView.h"
+#include "arrangerView.h"
 
 #pragma comment(lib, "mfplat")
 #pragma comment(lib, "mfreadwrite")
@@ -48,6 +49,17 @@ D2D1_COLOR_F makeRandomTrackColor()
 	}
 }
 
+WaveObject::WaveObject(const SongPosition& p, const std::shared_ptr<WaveEntity>& pw) : pos(p)
+{
+	assert(pw != nullptr);
+	this->pWaveEntity = pw;
+	this->pWaveEntity->registerUsedObject(this);
+}
+WaveObject::~WaveObject()
+{
+	this->pWaveEntity->unregisterUsedObject(this);
+}
+
 Track::Track(const std::wstring& n, bool ie, bool ia, const D2D1_COLOR_F& col) : name(n)
 {
 	this->is_editable = ie;
@@ -55,8 +67,104 @@ Track::Track(const std::wstring& n, bool ie, bool ia, const D2D1_COLOR_F& col) :
 	this->trackColor = col;
 }
 Track::~Track() = default;
+void Track::insertObject(const SongPosition& pos, const std::shared_ptr<WaveEntity>& pw)
+{
+	auto pObject = std::make_unique<WaveObject>(pos, pw);
 
-Project::Project()
+	if (this->objectList.empty())
+	{
+		OutputDebugString(L"Insert Successful.\n");
+		this->objectList.push_back(std::move(pObject));
+	}
+	else if(this->objectList.size() == 1)
+	{
+		if (pObject->getPosition() < std::begin(this->objectList)->get()->getPosition())
+		{
+			OutputDebugString(L"Insert Successful.\n");
+			this->objectList.push_front(std::move(pObject));
+		}
+		else if (pObject->getPosition() == std::begin(this->objectList)->get()->getPosition())
+		{
+			OutputDebugString(L"Replace.\n");
+			*this->objectList.begin() = std::move(pObject);
+		}
+		else
+		{
+			OutputDebugString(L"Insert Successful.\n");
+			this->objectList.push_back(std::move(pObject));
+		}
+	}
+	else
+	{
+		if (pObject->getPosition() < std::begin(this->objectList)->get()->getPosition())
+		{
+			// insert front
+			OutputDebugString(L"Insert Successful(FrontInsert).\n");
+			this->objectList.push_front(std::move(pObject));
+		}
+		else if ((std::end(this->objectList) - 1)->get()->getPosition() < pObject->getPosition())
+		{
+			// insert last
+			OutputDebugString(L"Insert Successful(BackInsert).\n");
+			this->objectList.push_back(std::move(pObject));
+		}
+		else
+		{
+			// binary search(a < o < b)
+			auto firstIter = std::begin(this->objectList);
+			auto lastIter = std::end(this->objectList) - 1;
+
+			while (true)
+			{
+				if (firstIter == lastIter) break;		// not found(?)
+				if (firstIter > lastIter) break;		// flip -> fault
+
+				if (firstIter->get()->getPosition() == pObject->getPosition())
+				{
+					// replace first
+					OutputDebugString(L"Replace.\n");
+					*firstIter = std::move(pObject);
+					break;
+				}
+				else if (lastIter->get()->getPosition() == pObject->getPosition())
+				{
+					// replace last
+					OutputDebugString(L"Replace.\n");
+					*lastIter = std::move(pObject);
+					break;
+				}
+				if (firstIter + 1 == lastIter)
+				{
+					// insert between first and last(expect first < obj < last)
+					OutputDebugString(L"Insert Successful.\n");
+					this->objectList.insert(lastIter, std::move(pObject));
+					break;
+				}
+
+				auto midIter = firstIter + std::distance(firstIter, lastIter) / 2;
+				if (midIter->get()->getPosition() == pObject->getPosition())
+				{
+					// replace mid
+					OutputDebugString(L"Replace.\n");
+					*midIter = std::move(pObject);
+					break;
+				}
+				if (midIter->get()->getPosition() < pObject->getPosition())
+				{
+					// midIter to first
+					firstIter = midIter;
+				}
+				else
+				{
+					// midIter to last
+					lastIter = midIter;
+				}
+			}
+		}
+	}
+}
+
+Project::Project() : current(0, 0, 4)
 {
 	this->qtzDenom = 16.0;
 
@@ -73,10 +181,46 @@ void Project::addEmptyTrack()
 {
 	this->userTracks.emplace_back(std::make_shared<Track>(L"Track "s + std::to_wstring(this->userTracks.size() + 1), true, true, makeRandomTrackColor()));
 }
-void Project::addWaveEntity(const std::wstring& filePath, const std::array<std::vector<float>, 2>& pDataBase)
+void Project::addWaveEntity(const std::wstring& filePath, double lis, const std::array<std::vector<float>, 2>& pDataBase)
 {
-	this->waveEntityList.push_back(std::make_unique<WaveEntity>(filePath, pDataBase));
-	getCurrentContext().queueUpdated(getCurrentContext().getWavePaletteView()->getWaveListView()->getInnerView());
+	this->waveEntityList.push_back(std::make_shared<WaveEntity>(filePath, lis, pDataBase));
+}
+void Project::commitUpdateWaveEntity()
+{
+	getCurrentContext().getWavePaletteView()->getWaveListView()->notifyUpdateEntityList();
+}
+void Project::insertObjectToTrack(size_t userTrackIndex, const SongPosition& pos, const std::shared_ptr<WaveEntity>& pw)
+{
+	if (userTrackIndex < this->userTracks.size())
+	{
+		this->userTracks[userTrackIndex]->insertObject(pos, pw);
+	}
+}
+double Project::getCurrentTempo() const
+{
+	if (!this->tempoInfos.empty())
+	{
+		if (this->tempoInfos.size() == 1)
+		{
+			if (std::cbegin(this->tempoInfos)->pos < this->current) return std::cbegin(this->tempoInfos)->tempo;
+		}
+		else
+		{
+			// forwarding
+			for (auto iter = std::crbegin(this->tempoInfos); iter != std::crend(this->tempoInfos); ++iter)
+			{
+				if (iter->pos < this->current) return iter->tempo;
+			}
+		}
+	}
+
+	// fallthrough(default value)
+	return 120.0;
+}
+void Project::setCurrentPosition(const SongPosition& p)
+{
+	this->current = p;
+	getCurrentContext().getArrangerView()->notifyUpdateCurrentPosition();
 }
 
 ProjectManager::ProjectManager()
@@ -93,9 +237,10 @@ void ProjectManager::createEmpty()
 	this->pProjectInstance = std::make_unique<Project>();
 }
 
-WaveEntity::WaveEntity(const std::wstring& filePath, const std::array<std::vector<float>, 2>& pDataBase)
+WaveEntity::WaveEntity(const std::wstring& filePath, double lis, const std::array<std::vector<float>, 2>& pDataBase)
 {
 	this->filePath = filePath;
+	this->lengthInSeconds = lis;
 	this->dataLength = pDataBase[0].size();
 	this->pDataEntity[0].reset(new float[this->dataLength]);
 	this->pDataEntity[1].reset(new float[this->dataLength]);

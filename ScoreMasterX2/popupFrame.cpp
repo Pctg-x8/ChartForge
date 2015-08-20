@@ -20,7 +20,7 @@ PopupFrame::PopupFrame(const std::wstring& frameID, WNDPROC pProcCallback)
 	wce.lpfnWndProc = pProcCallback;
 	if (!RegisterClassEx(&wce)) throw std::exception("PopupFrame Registering failed");
 
-	this->nativePointer = CreateWindowEx(WS_EX_NOREDIRECTIONBITMAP, wce.lpszClassName, L"AppPopupFrame",
+	this->nativePointer = CreateWindowEx(WS_EX_NOREDIRECTIONBITMAP | WS_EX_TOOLWINDOW, wce.lpszClassName, L"AppPopupFrame",
 		WS_POPUP, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,
 		nullptr, wce.hInstance, nullptr);
 	if (this->nativePointer == nullptr) throw std::exception("PopupFrame Native Pointer create failed");
